@@ -24,7 +24,7 @@ public class Znode implements Serializable{
 	/**
 	 * 父节点路径
 	 */
-	private String parentPath;
+	private String parentName;
 	/**
 	 * 子节点列表
 	 */
@@ -47,11 +47,11 @@ public class Znode implements Serializable{
 	public void setData(String data) {
 		this.data = data;
 	}
-	public String getParentPath() {
-		return parentPath;
+	public String getParentName() {
+		return parentName;
 	}
-	public void setParentPath(String parentPath) {
-		this.parentPath = parentPath;
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
 	}
 	public List<Znode> getChilden() {
 		return childen;

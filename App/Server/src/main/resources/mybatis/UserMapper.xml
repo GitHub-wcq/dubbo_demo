@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.youlanw.app.repository.mysql.UserMapper">
+
+	<resultMap id="RM_User" type="com.youlanw.app.entity.mysql.User">
+        <result property="id" column="id"/>
+        <result property="loginname" column="loginname"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="salt" column="salt"/>
+        <result property="registertime" column="registertime"/>
+        <result property="registertype" column="registertype"/>
+        <result property="registerBranchId" column="register_branch_id"/>
+        <result property="registerSource" column="register_source"/>
+        <result property="registerInviteCode" column="register_invite_code"/>
+        <result property="inviteCode" column="invite_code"/>
+        <result property="sourceActivityId" column="source_activity_id"/>
+        <result property="firstLoginTime" column="first_login_time"/>
+        <result property="lastLoginTime" column="last_login_time"/>
+        <result property="lastLoginIp" column="last_login_ip"/>
+        <result property="status" column="status"/>
+        <result property="isSynHr" column="is_syn_hr"/>
+        <result property="lastSynHrTime" column="last_syn_hr_time"/>
+        <result property="hasDownloadApp" column="has_download_app"/>
+        <result property="fromKey" column="from_key"/>
+        <result property="appChannelCode" column="app_channel_code"/>
+        <result property="behavior" column="behavior"/>
+        <result property="appSourceCode" column="app_source_code"/>
+        <result property="isValidation" column="is_validation"/>
+        <result property="updateTime" column="update_time"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,loginname,username,password,salt,registertime,registertype,register_branch_id,register_source,register_invite_code,invite_code,source_activity_id,first_login_time,last_login_time,last_login_ip,status,is_syn_hr,last_syn_hr_time,has_download_app,from_key,app_channel_code,behavior,app_source_code,is_validation,update_time
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO site_user (
+        	id ,
+        	loginname ,
+        	username ,
+        	password ,
+        	salt ,
+        	registertime ,
+        	registertype ,
+        	register_branch_id ,
+        	register_source ,
+        	register_invite_code ,
+        	invite_code ,
+        	source_activity_id ,
+        	first_login_time ,
+        	last_login_time ,
+        	last_login_ip ,
+        	status ,
+        	is_syn_hr ,
+        	last_syn_hr_time ,
+        	has_download_app ,
+        	from_key ,
+        	app_channel_code ,
+        	behavior ,
+        	app_source_code ,
+        	is_validation ,
+        	update_time 
+        ) VALUES (
+        	#{id} ,
+        	#{loginname} ,
+        	#{username} ,
+        	#{password} ,
+        	#{salt} ,
+        	#{registertime} ,
+        	#{registertype} ,
+        	#{registerBranchId} ,
+        	#{registerSource} ,
+        	#{registerInviteCode} ,
+        	#{inviteCode} ,
+        	#{sourceActivityId} ,
+        	#{firstLoginTime} ,
+        	#{lastLoginTime} ,
+        	#{lastLoginIp} ,
+        	#{status} ,
+        	#{isSynHr} ,
+        	#{lastSynHrTime} ,
+        	#{hasDownloadApp} ,
+        	#{fromKey} ,
+        	#{appChannelCode} ,
+        	#{behavior} ,
+        	#{appSourceCode} ,
+        	#{isValidation} ,
+        	#{updateTime} 
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="update" >
+    <![CDATA[
+        UPDATE site_user SET
+	        loginname = #{loginname} ,
+	        username = #{username} ,
+	        password = #{password} ,
+	        salt = #{salt} ,
+	        registertime = #{registertime} ,
+	        registertype = #{registertype} ,
+	        register_branch_id = #{registerBranchId} ,
+	        register_source = #{registerSource} ,
+	        register_invite_code = #{registerInviteCode} ,
+	        invite_code = #{inviteCode} ,
+	        source_activity_id = #{sourceActivityId} ,
+	        first_login_time = #{firstLoginTime} ,
+	        last_login_time = #{lastLoginTime} ,
+	        last_login_ip = #{lastLoginIp} ,
+	        status = #{status} ,
+	        is_syn_hr = #{isSynHr} ,
+	        last_syn_hr_time = #{lastSynHrTime} ,
+	        has_download_app = #{hasDownloadApp} ,
+	        from_key = #{fromKey} ,
+	        app_channel_code = #{appChannelCode} ,
+	        behavior = #{behavior} ,
+	        app_source_code = #{appSourceCode} ,
+	        is_validation = #{isValidation} ,
+	        update_time = #{updateTime} 
+        WHERE 
+	        id = #{id} 
+    ]]>
+	</update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM site_user WHERE
+        id = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="getById" resultMap="RM_User">
+		SELECT <include refid="columns" />
+	    <![CDATA[
+		    FROM site_user 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="findPage_where">
+		<where>	      				
+	       <if test="id != null">
+				AND id = #{id}
+			</if>
+	       <if test="loginname != null">
+				AND loginname = #{loginname}
+			</if>
+	       <if test="username != null">
+				AND username = #{username}
+			</if>
+	       <if test="password != null">
+				AND password = #{password}
+			</if>
+	       <if test="salt != null">
+				AND salt = #{salt}
+			</if>
+	       <if test="registertimeBegin != null">
+				AND registertime >= #{registertimeBegin}
+		   </if>
+		   <if test="registertimeEnd  != null">
+				AND registertime &lt;= #{registertimeEnd}
+		   </if>
+	       <if test="registertype != null">
+				AND registertype = #{registertype}
+			</if>
+	       <if test="registerBranchId != null">
+				AND register_branch_id = #{registerBranchId}
+			</if>
+	       <if test="registerSource != null">
+				AND register_source = #{registerSource}
+			</if>
+	       <if test="registerInviteCode != null">
+				AND register_invite_code = #{registerInviteCode}
+			</if>
+	       <if test="inviteCode != null">
+				AND invite_code = #{inviteCode}
+			</if>
+	       <if test="sourceActivityId != null">
+				AND source_activity_id = #{sourceActivityId}
+			</if>
+	       <if test="firstLoginTimeBegin != null">
+				AND first_login_time >= #{firstLoginTimeBegin}
+		   </if>
+		   <if test="firstLoginTimeEnd  != null">
+				AND first_login_time &lt;= #{firstLoginTimeEnd}
+		   </if>
+	       <if test="lastLoginTimeBegin != null">
+				AND last_login_time >= #{lastLoginTimeBegin}
+		   </if>
+		   <if test="lastLoginTimeEnd  != null">
+				AND last_login_time &lt;= #{lastLoginTimeEnd}
+		   </if>
+	       <if test="lastLoginIp != null">
+				AND last_login_ip = #{lastLoginIp}
+			</if>
+	       <if test="status != null">
+				AND status = #{status}
+			</if>
+	       <if test="isSynHr != null">
+				AND is_syn_hr = #{isSynHr}
+			</if>
+	       <if test="lastSynHrTimeBegin != null">
+				AND last_syn_hr_time >= #{lastSynHrTimeBegin}
+		   </if>
+		   <if test="lastSynHrTimeEnd  != null">
+				AND last_syn_hr_time &lt;= #{lastSynHrTimeEnd}
+		   </if>
+	       <if test="hasDownloadApp != null">
+				AND has_download_app = #{hasDownloadApp}
+			</if>
+	       <if test="fromKey != null">
+				AND from_key = #{fromKey}
+			</if>
+	       <if test="appChannelCode != null">
+				AND app_channel_code = #{appChannelCode}
+			</if>
+	       <if test="behavior != null">
+				AND behavior = #{behavior}
+			</if>
+	       <if test="appSourceCode != null">
+				AND app_source_code = #{appSourceCode}
+			</if>
+	       <if test="isValidation != null">
+				AND is_validation = #{isValidation}
+			</if>
+	       <if test="updateTimeBegin != null">
+				AND update_time >= #{updateTimeBegin}
+		   </if>
+		   <if test="updateTimeEnd  != null">
+				AND update_time &lt;= #{updateTimeEnd}
+		   </if>
+		</where>
+	</sql>
+		
+    <select id="count" resultType="long">
+        SELECT count(id) FROM site_user 
+		<include refid="findPage_where"/>    
+    </select>
+
+    <select id="findAll" resultMap="RM_User">
+    SELECT <include refid="columns"/> FROM site_user where 1=1
+    </select>
+
+    <select id="select" resultMap="RM_User">
+    SELECT <include refid="columns"/> FROM site_user where 1=1
+    <include refid="findPage_where"/> limit 0,1
+    </select>
+
+    <select id="findPage" resultMap="RM_User">
+    	SELECT <include refid="columns" />
+	    FROM site_user 
+		<include refid="findPage_where"/>
+    </select>
+
+    <select id="getByLoginname" resultMap="RM_User" parameterType="java.lang.String">
+	    SELECT <include refid="columns"/>
+	    <![CDATA[
+	        FROM site_user where loginname = #{loginname}
+	    ]]>
+    </select>
+    
+	
+</mapper>
+

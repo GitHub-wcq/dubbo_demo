@@ -1,5 +1,7 @@
 package com.youlanw.UCM.Provider.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -28,15 +30,20 @@ public class ZookeeperNodeUtil {
 	 * @date 2018年4月20日
 	 */
 	static{
-		String dubboEnv = System.getProperty("dubboEnv");
-		System.out.println(dubboEnv);
-		String dubboProPertiesPath = "dubbo/dubbo.properties";
-		if(dubboEnv == null || dubboEnv == "") {
-			dubboProPertiesPath = dubboEnv;
-		}
+		
 		InputStream in = null;
 		try {
-			in = ZookeeperServiceImpl.class.getClassLoader().getResourceAsStream(dubboProPertiesPath);
+			String dubboEnv = System.getProperty("dubboEnv");
+			System.out.println(dubboEnv);
+			String dubboProPertiesPath = "";
+			if("dubbo/dubbo.properties".equals(dubboEnv) || dubboEnv == null || dubboEnv == "") {
+				dubboProPertiesPath = "dubbo/dubbo.properties";
+				in = ZookeeperServiceImpl.class.getClassLoader().getResourceAsStream(dubboProPertiesPath);
+			} else {
+				dubboProPertiesPath = dubboEnv.substring(7);
+				File file = new File(dubboProPertiesPath);
+				in = new FileInputStream(file);
+			}
 			Properties properties = new Properties();
 			properties.load(in);
 			address = properties.getProperty("dubbo.zookeeper.address");
@@ -49,7 +56,7 @@ public class ZookeeperNodeUtil {
 			} else {
 				sessionTimeout = SESSION_TIMEOUT;
 			}
-			zk = new ZooKeeperUtil(address,sessionTimeout);
+			zk = ZooKeeperUtil.getInstance(address,sessionTimeout);
 			System.out.println("zookeeper连接成功...");
 		} catch (Exception e) {
 			e.printStackTrace();

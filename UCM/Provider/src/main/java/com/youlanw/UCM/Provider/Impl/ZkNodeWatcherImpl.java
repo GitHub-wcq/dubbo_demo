@@ -1,21 +1,13 @@
 package com.youlanw.UCM.Provider.Impl;
 
 import org.I0Itec.zkclient.IZkDataListener;
-import org.I0Itec.zkclient.ZkClient;
-import org.apache.zookeeper.WatchedEvent;
 
 import com.youlanw.common.utils.zookeeper.ZkNodeWatcher;
 
 public class ZkNodeWatcherImpl extends ZkNodeWatcher {
 
 	@Override
-	public void process(WatchedEvent event) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void subscribeChildChanges(String path, ZkClient zkClient) {
+	public void subscribeChildChanges(String path) {
 		zkClient.subscribeChildChanges(path, (parentPath, currentChilds) -> {
 			System.out.println("重写");
 			System.out.println("parentPath：" + parentPath);  
@@ -24,7 +16,7 @@ public class ZkNodeWatcherImpl extends ZkNodeWatcher {
 	}
 
 	@Override
-	public void subscribeDataChanges(String path, ZkClient zkClient) {
+	public void subscribeDataChanges(String path) {
 		zkClient.unsubscribeDataChanges(path, new IZkDataListener() {
 			@Override
 			public void handleDataChange(String dataPath, Object data) throws Exception {

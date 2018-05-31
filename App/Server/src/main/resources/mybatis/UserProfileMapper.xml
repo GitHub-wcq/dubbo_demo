@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.youlanw.app.repository.mysql.UserProfileMapper">
+
+	<resultMap id="RM_UserProfile" type="com.youlanw.app.entity.mysql.UserProfile">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="realName" column="real_name"/>
+        <result property="gender" column="gender"/>
+        <result property="role" column="role"/>
+        <result property="avatar" column="avatar"/>
+        <result property="signature" column="signature"/>
+        <result property="integral" column="integral"/>
+        <result property="gold" column="gold"/>
+        <result property="balance" column="balance"/>
+        <result property="birthYear" column="birth_year"/>
+        <result property="birthMonth" column="birth_month"/>
+        <result property="birthDay" column="birth_day"/>
+        <result property="telephone" column="telephone"/>
+        <result property="mobile" column="mobile"/>
+        <result property="alipay" column="alipay"/>
+        <result property="qq" column="qq"/>
+        <result property="yy" column="yy"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,user_id,real_name,gender,role,avatar,signature,integral,gold,balance,birth_year,birth_month,birth_day,telephone,mobile,alipay,qq,yy
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO site_user_profile (
+        	id ,
+        	user_id ,
+        	real_name ,
+        	gender ,
+        	role ,
+        	avatar ,
+        	signature ,
+        	integral ,
+        	gold ,
+        	balance ,
+        	birth_year ,
+        	birth_month ,
+        	birth_day ,
+        	telephone ,
+        	mobile ,
+        	alipay ,
+        	qq ,
+        	yy 
+        ) VALUES (
+        	#{id} ,
+        	#{userId} ,
+        	#{realName} ,
+        	#{gender} ,
+        	#{role} ,
+        	#{avatar} ,
+        	#{signature} ,
+        	#{integral} ,
+        	#{gold} ,
+        	#{balance} ,
+        	#{birthYear} ,
+        	#{birthMonth} ,
+        	#{birthDay} ,
+        	#{telephone} ,
+        	#{mobile} ,
+        	#{alipay} ,
+        	#{qq} ,
+        	#{yy} 
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="update" >
+    <![CDATA[
+        UPDATE site_user_profile SET
+	        user_id = #{userId} ,
+	        real_name = #{realName} ,
+	        gender = #{gender} ,
+	        role = #{role} ,
+	        avatar = #{avatar} ,
+	        signature = #{signature} ,
+	        integral = #{integral} ,
+	        gold = #{gold} ,
+	        balance = #{balance} ,
+	        birth_year = #{birthYear} ,
+	        birth_month = #{birthMonth} ,
+	        birth_day = #{birthDay} ,
+	        telephone = #{telephone} ,
+	        mobile = #{mobile} ,
+	        alipay = #{alipay} ,
+	        qq = #{qq} ,
+	        yy = #{yy} 
+        WHERE 
+	        id = #{id} 
+    ]]>
+	</update>
+
+	<update id="updateByUserId" >
+    <![CDATA[
+        UPDATE site_user_profile SET
+	        real_name = #{realName} ,
+	        gender = #{gender} ,
+	        role = #{role} ,
+	        avatar = #{avatar} ,
+	        signature = #{signature} ,
+	        integral = #{integral} ,
+	        gold = #{gold} ,
+	        balance = #{balance} ,
+	        birth_year = #{birthYear} ,
+	        birth_month = #{birthMonth} ,
+	        birth_day = #{birthDay} ,
+	        telephone = #{telephone} ,
+	        mobile = #{mobile} ,
+	        alipay = #{alipay} ,
+	        qq = #{qq} ,
+	        yy = #{yy} 
+        WHERE 
+	        user_id = #{userId}
+    ]]>
+	</update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM site_user_profile WHERE
+        id = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="getById" resultMap="RM_UserProfile">
+		SELECT <include refid="columns" />
+	    <![CDATA[
+		    FROM site_user_profile 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="findPage_where">
+		<where>	      				
+	       <if test="id != null">
+				AND id = #{id}
+			</if>
+	       <if test="userId != null">
+				AND user_id = #{userId}
+			</if>
+	       <if test="realName != null">
+				AND real_name = #{realName}
+			</if>
+	       <if test="gender != null">
+				AND gender = #{gender}
+			</if>
+	       <if test="role != null">
+				AND role = #{role}
+			</if>
+	       <if test="avatar != null">
+				AND avatar = #{avatar}
+			</if>
+	       <if test="signature != null">
+				AND signature = #{signature}
+			</if>
+	       <if test="integral != null">
+				AND integral = #{integral}
+			</if>
+	       <if test="gold != null">
+				AND gold = #{gold}
+			</if>
+	       <if test="balance != null">
+				AND balance = #{balance}
+			</if>
+	       <if test="birthYear != null">
+				AND birth_year = #{birthYear}
+			</if>
+	       <if test="birthMonth != null">
+				AND birth_month = #{birthMonth}
+			</if>
+	       <if test="birthDay != null">
+				AND birth_day = #{birthDay}
+			</if>
+	       <if test="telephone != null">
+				AND telephone = #{telephone}
+			</if>
+	       <if test="mobile != null">
+				AND mobile = #{mobile}
+			</if>
+	       <if test="alipay != null">
+				AND alipay = #{alipay}
+			</if>
+	       <if test="qq != null">
+				AND qq = #{qq}
+			</if>
+	       <if test="yy != null">
+				AND yy = #{yy}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="count" resultType="long">
+        SELECT count(id) FROM site_user_profile 
+		<include refid="findPage_where"/>    
+    </select>
+
+    <select id="findAll" resultMap="RM_UserProfile">
+    SELECT <include refid="columns"/> FROM site_user_profile where 1=1
+    </select>
+
+    <select id="select" resultMap="RM_UserProfile">
+    SELECT <include refid="columns"/> FROM site_user_profile where 1=1
+    <include refid="findPage_where"/> limit 0,1
+    </select>
+
+    <select id="findPage" resultMap="RM_UserProfile">
+    	SELECT <include refid="columns" />
+	    FROM site_user_profile 
+		<include refid="findPage_where"/>
+    </select>
+    
+	<select id="getByUserId" resultMap="RM_UserProfile">
+		SELECT <include refid="columns" />
+	    <![CDATA[
+		    FROM site_user_profile 
+	        WHERE 
+		        user_id = #{userId} 
+	    ]]>
+	</select>
+	
+</mapper>
+

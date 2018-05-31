@@ -14,8 +14,8 @@ public class ZnodeSearchServiceImpl implements ZnodeSearchService {
 	private ZooKeeperUtil zk = ZookeeperNodeUtil.getZooKeeperUtil();
 	
 	@Override
-	public String searchCZnode(String type, String projectName) {
-		String path = ZK_C_NODE +"/"+type+"/"+projectName;
+	public String searchCZnode(String projectName,String type) {
+		String path = ZK_C_NODE +"/"+projectName+"/"+type;
 		System.out.println(path);
 		if(zk.isExist(path)) {
 			return zk.getZnodeData(path);

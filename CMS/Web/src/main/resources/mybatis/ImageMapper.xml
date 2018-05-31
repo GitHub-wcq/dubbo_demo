@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.youlanw.cms.repository.mysql.ImageMapper">
+
+	<resultMap id="RM_Image" type="com.youlanw.cms.entity.mysql.Image">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="imgpath" column="imgpath"/>
+        <result property="extname" column="extname"/>
+        <result property="comment" column="comment"/>
+        <result property="createtime" column="createtime"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,type,imgpath,extname,comment,createtime
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO site_image (
+        	id ,
+        	type ,
+        	imgpath ,
+        	extname ,
+        	comment ,
+        	createtime 
+        ) VALUES (
+        	#{id} ,
+        	#{type} ,
+        	#{imgpath} ,
+        	#{extname} ,
+        	#{comment} ,
+        	#{createtime} 
+        )
+    ]]>
+	</insert>
+    
+	<update id="update" >
+    <![CDATA[
+        UPDATE site_image SET
+	        type = #{type} ,
+	        imgpath = #{imgpath} ,
+	        extname = #{extname} ,
+	        comment = #{comment} ,
+	        createtime = #{createtime} 
+        WHERE 
+	        id = #{id} 
+    ]]>
+	</update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM site_image WHERE
+        id = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="getById" resultMap="RM_Image">
+		SELECT <include refid="columns" />
+	    <![CDATA[
+		    FROM site_image 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="findPage_where">
+		<where>	      				
+	       <if test="id != null">
+				AND id = #{id}
+			</if>
+	       <if test="type != null">
+				AND type = #{type}
+			</if>
+	       <if test="imgpath != null">
+				AND imgpath = #{imgpath}
+			</if>
+	       <if test="extname != null">
+				AND extname = #{extname}
+			</if>
+	       <if test="comment != null">
+				AND comment = #{comment}
+			</if>
+	       <if test="createtimeBegin != null">
+				AND createtime >= #{createtimeBegin}
+		   </if>
+		   <if test="createtimeEnd  != null">
+				AND createtime &lt;= #{createtimeEnd}
+		   </if>
+		</where>
+	</sql>
+		
+    <select id="getImagePathById" resultType="java.lang.String">
+        SELECT imgpath FROM site_image where id=#{id}
+    </select>
+    
+    <select id="count" resultType="long">
+        SELECT count(id) FROM site_image 
+		<include refid="findPage_where"/>    
+    </select>
+
+    <select id="findAll" resultMap="RM_Image">
+    SELECT <include refid="columns"/> FROM site_image where 1=1
+    </select>
+
+    <select id="select" resultMap="RM_Image">
+    SELECT <include refid="columns"/> FROM site_image where 1=1
+    <include refid="findPage_where"/> limit 0,1
+    </select>
+
+    <select id="findPage" resultMap="RM_Image">
+    	SELECT <include refid="columns" />
+	    FROM site_image 
+		<include refid="findPage_where"/>
+    </select>
+
+	
+</mapper>
+

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<!-- <mapper namespace="com.youlanw.app.repository.ActSchoolInfoMapper"> -->
+<mapper namespace="com.youlanw.cms.repository.mysql.ActSchoolInfoMapper">
+
+	<resultMap id="RM_ActSchoolInfo" type="com.youlanw.cms.entity.mysql.ActSchoolInfo">
+        <result property="id" column="id"/>
+        <result property="number" column="number"/>
+        <result property="name" column="name"/>
+        <result property="address" column="address"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="status" column="status"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,number,name,address,update_time,create_time,status
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO act_school_info (
+        	id ,
+        	number ,
+        	name ,
+        	address ,
+        	update_time ,
+        	create_time ,
+        	status 
+        ) VALUES (
+        	#{id} ,
+        	#{number} ,
+        	#{name} ,
+        	#{address} ,
+        	#{updateTime} ,
+        	#{createTime} ,
+        	#{status} 
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="update" >
+    <![CDATA[
+        UPDATE act_school_info SET
+	        number = #{number} ,
+	        name = #{name} ,
+	        address = #{address} ,
+	        update_time = #{updateTime} ,
+	        create_time = #{createTime} ,
+	        status = #{status} 
+        WHERE 
+	        id = #{id} 
+    ]]>
+	</update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM act_school_info WHERE
+        id = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="getById" resultMap="RM_ActSchoolInfo">
+		SELECT <include refid="columns" />
+	    <![CDATA[
+		    FROM act_school_info 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="findPage_where">
+		<where>	      				
+	       <if test="id != null">
+				AND id = #{id}
+			</if>
+	       <if test="number != null">
+				AND number = #{number}
+			</if>
+	       <if test="name != null">
+				AND name = #{name}
+			</if>
+	       <if test="address != null">
+				AND address = #{address}
+			</if>
+	       <if test="updateTimeBegin != null">
+				AND update_time >= #{updateTimeBegin}
+		   </if>
+		   <if test="updateTimeEnd  != null">
+				AND update_time &lt;= #{updateTimeEnd}
+		   </if>
+	       <if test="createTimeBegin != null">
+				AND create_time >= #{createTimeBegin}
+		   </if>
+		   <if test="createTimeEnd  != null">
+				AND create_time &lt;= #{createTimeEnd}
+		   </if>
+	       <if test="status != null">
+				AND status = #{status}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="count" resultType="long">
+        SELECT count(id) FROM act_school_info 
+		<include refid="findPage_where"/>    
+    </select>
+
+    <select id="findAll" resultMap="RM_ActSchoolInfo">
+    SELECT <include refid="columns"/> FROM act_school_info where 1=1
+    </select>
+
+    <select id="select" resultMap="RM_ActSchoolInfo">
+    SELECT <include refid="columns"/> FROM act_school_info where 1=1
+    <include refid="findPage_where"/> limit 0,1
+    </select>
+
+    <select id="findPage" resultMap="RM_ActSchoolInfo">
+    	SELECT <include refid="columns" />
+	    FROM act_school_info 
+		<include refid="findPage_where"/>
+    </select>
+
+	
+</mapper>
+

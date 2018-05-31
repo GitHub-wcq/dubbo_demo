@@ -1,6 +1,8 @@
 package com.youlanw.common.utils.encrypt;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -67,4 +69,33 @@ public class EncryptUtils {
 		}
 	}
 	
+	/**
+	 * 
+	 * <p>Title: urlEncode</p>  
+	 * Description: <pre>UrlEncode处理字符串</pre>  
+	 * @author Sean.Wang 
+	 * @date 2018年5月26日  
+	 * @param value 被处理的值
+	 * @param format 编码格式，例如 “GBK”
+	 * @return encode后的值
+	 * @throws UnsupportedEncodingException 
+	 */
+	public static String urlEncode(String value, String format) throws UnsupportedEncodingException {
+		return URLEncoder.encode(value, format);
+	}
+	
+	/**
+	 * 
+	 * <p>Title: urlDecoder</p>  
+	 * Description: <pre>UrlDecode处理字符串</pre>  
+	 * @author Sean.Wang 
+	 * @date 2018年5月26日  
+	 * @param value 被处理的值
+	 * @param format 编码格式，例如 “GBK”
+	 * @return decode后的值
+	 * @throws UnsupportedEncodingException 
+	 */
+	public static String urlDecode(String value, String format) throws UnsupportedEncodingException {
+		return URLDecoder.decode(value, format);
+	}
 }

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.youlanw.app.repository.mysql.UserIntegralRuleMapper">
+
+	<resultMap id="RM_UserIntegralRule" type="com.youlanw.app.entity.mysql.UserIntegralRule">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="behavior" column="behavior"/>
+        <result property="integral" column="integral"/>
+        <result property="growth" column="growth"/>
+        <result property="integralUpperLimitDay" column="integral_upper_limit_day"/>
+        <result property="integralUpperLimitAll" column="integral_upper_limit_all"/>
+        <result property="effectiveStartTime" column="effective_start_time"/>
+        <result property="effectiveEndTime" column="effective_end_time"/>
+        <result property="relationCode" column="relation_code"/>
+        <result property="inviteRelationCode" column="invite_relation_code"/>
+        <result property="status" column="status"/>
+        <result property="type" column="type"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,code,behavior,integral,growth,integral_upper_limit_day,integral_upper_limit_all,effective_start_time,effective_end_time,relation_code,invite_relation_code,status,type
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO site_user_integral_rule (
+        	id ,
+        	code ,
+        	behavior ,
+        	integral ,
+        	growth ,
+        	integral_upper_limit_day ,
+        	integral_upper_limit_all ,
+        	effective_start_time ,
+        	effective_end_time ,
+        	relation_code ,
+        	invite_relation_code ,
+        	status ,
+        	type 
+        ) VALUES (
+        	#{id} ,
+        	#{code} ,
+        	#{behavior} ,
+        	#{integral} ,
+        	#{growth} ,
+        	#{integralUpperLimitDay} ,
+        	#{integralUpperLimitAll} ,
+        	#{effectiveStartTime} ,
+        	#{effectiveEndTime} ,
+        	#{relationCode} ,
+        	#{inviteRelationCode} ,
+        	#{status} ,
+        	#{type} 
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="update" >
+    <![CDATA[
+        UPDATE site_user_integral_rule SET
+	        code = #{code} ,
+	        behavior = #{behavior} ,
+	        integral = #{integral} ,
+	        growth = #{growth} ,
+	        integral_upper_limit_day = #{integralUpperLimitDay} ,
+	        integral_upper_limit_all = #{integralUpperLimitAll} ,
+	        effective_start_time = #{effectiveStartTime} ,
+	        effective_end_time = #{effectiveEndTime} ,
+	        relation_code = #{relationCode} ,
+	        invite_relation_code = #{inviteRelationCode} ,
+	        status = #{status} ,
+	        type = #{type} 
+        WHERE 
+	        id = #{id} 
+    ]]>
+	</update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM site_user_integral_rule WHERE
+        id = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="getById" resultMap="RM_UserIntegralRule">
+		SELECT <include refid="columns" />
+	    <![CDATA[
+		    FROM site_user_integral_rule 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="findPage_where">
+		<where>	      				
+	       <if test="id != null">
+				AND id = #{id}
+			</if>
+	       <if test="code != null">
+				AND code = #{code}
+			</if>
+	       <if test="behavior != null">
+				AND behavior = #{behavior}
+			</if>
+	       <if test="integral != null">
+				AND integral = #{integral}
+			</if>
+	       <if test="growth != null">
+				AND growth = #{growth}
+			</if>
+	       <if test="integralUpperLimitDay != null">
+				AND integral_upper_limit_day = #{integralUpperLimitDay}
+			</if>
+	       <if test="integralUpperLimitAll != null">
+				AND integral_upper_limit_all = #{integralUpperLimitAll}
+			</if>
+	       <if test="effectiveStartTimeBegin != null">
+				AND effective_start_time >= #{effectiveStartTimeBegin}
+		   </if>
+		   <if test="effectiveStartTimeEnd  != null">
+				AND effective_start_time &lt;= #{effectiveStartTimeEnd}
+		   </if>
+	       <if test="effectiveEndTimeBegin != null">
+				AND effective_end_time >= #{effectiveEndTimeBegin}
+		   </if>
+		   <if test="effectiveEndTimeEnd  != null">
+				AND effective_end_time &lt;= #{effectiveEndTimeEnd}
+		   </if>
+	       <if test="relationCode != null">
+				AND relation_code = #{relationCode}
+			</if>
+	       <if test="inviteRelationCode != null">
+				AND invite_relation_code = #{inviteRelationCode}
+			</if>
+	       <if test="status != null">
+				AND status = #{status}
+			</if>
+	       <if test="type != null">
+				AND type = #{type}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="count" resultType="long">
+        SELECT count(id) FROM site_user_integral_rule 
+		<include refid="findPage_where"/>    
+    </select>
+
+    <select id="findAll" resultMap="RM_UserIntegralRule">
+    SELECT <include refid="columns"/> FROM site_user_integral_rule where 1=1
+    </select>
+
+    <select id="select" resultMap="RM_UserIntegralRule">
+    SELECT <include refid="columns"/> FROM site_user_integral_rule where 1=1
+    <include refid="findPage_where"/> limit 0,1
+    </select>
+
+    <select id="findPage" resultMap="RM_UserIntegralRule">
+    	SELECT <include refid="columns" />
+	    FROM site_user_integral_rule 
+		<include refid="findPage_where"/>
+    </select>
+
+    <select id="getByCode" resultMap="RM_UserIntegralRule" parameterType="java.lang.String">
+	    SELECT <include refid="columns"/>
+	    <![CDATA[
+	        FROM site_user_integral_rule where code = #{code}
+	    ]]>
+    </select>
+    <select id="getCodeByBehavior" resultType="java.lang.String" parameterType="java.lang.String">
+	    SELECT code
+	    <![CDATA[
+	        FROM site_user_integral_rule where behavior = #{behavior}
+	    ]]>
+    </select>
+	
+</mapper>
+

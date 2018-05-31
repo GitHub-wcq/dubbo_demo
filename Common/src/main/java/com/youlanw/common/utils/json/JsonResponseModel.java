@@ -1,6 +1,7 @@
 package com.youlanw.common.utils.json;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 /**
  * 
@@ -45,7 +46,7 @@ public class JsonResponseModel {
 	public String toJsonString(){
 		JSONObject json = new JSONObject();
 		if(this.code == null){
-			json.put("code", ResponseCode.EXCEPTION.getCode());
+			json.put("code", ResponseCode.SYSTEM_INNER_ERROR.getCode());
 			json.put("msg", this.msg);
 			return json.toString();
 		}
@@ -54,7 +55,7 @@ public class JsonResponseModel {
 		if(this.data != null){
 			json.put("data", this.data);
 		}
-		return json.toString();
+		return JSONObject.toJSONString(json, SerializerFeature.WriteMapNullValue);
 	}
 	
 }

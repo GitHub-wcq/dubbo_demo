@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<!-- <mapper namespace="com.junsheng.community.poss.repository.EduStarStudentMapper"> -->
+<mapper namespace="com.youlanw.app.repository.mysql.EduStarStudentDao">
+
+	<resultMap id="RM_EduStarStudent" type="com.youlanw.app.entity.mysql.EduStarStudent">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="headImg" column="head_img"/>
+        <result property="trainSchool" column="train_school"/>
+        <result property="trainSchoolId" column="train_school_id"/>
+        <result property="trainSpecialty" column="train_specialty"/>
+        <result property="trainSpecialtyId" column="train_specialty_id"/>
+        <result property="company" column="company"/>
+        <result property="companyId" column="company_id"/>
+        <result property="currentPosition" column="current_position"/>
+        <result property="salary" column="salary"/>
+        <result property="salaryUnit" column="salary_unit"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,name,head_img,train_school,train_school_id,train_specialty,train_specialty_id,company,company_id,current_position,salary,salary_unit,description,create_time,update_time
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO edu_star_student (
+        	id ,
+        	name ,
+        	head_img ,
+        	train_school ,
+        	train_school_id ,
+        	train_specialty ,
+        	train_specialty_id ,
+        	company ,
+        	company_id ,
+        	current_position ,
+        	salary ,
+        	salary_unit ,
+        	description ,
+        	create_time ,
+        	update_time 
+        ) VALUES (
+        	#{id} ,
+        	#{name} ,
+        	#{headImg} ,
+        	#{trainSchool} ,
+        	#{trainSchoolId} ,
+        	#{trainSpecialty} ,
+        	#{trainSpecialtyId} ,
+        	#{company} ,
+        	#{companyId} ,
+        	#{currentPosition} ,
+        	#{salary} ,
+        	#{salaryUnit} ,
+        	#{description} ,
+        	#{createTime} ,
+        	#{updateTime} 
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="update" >
+    <![CDATA[
+        UPDATE edu_star_student SET
+	        name = #{name} ,
+	        head_img = #{headImg} ,
+	        train_school = #{trainSchool} ,
+	        train_school_id = #{trainSchoolId} ,
+	        train_specialty = #{trainSpecialty} ,
+	        train_specialty_id = #{trainSpecialtyId} ,
+	        company = #{company} ,
+	        company_id = #{companyId} ,
+	        current_position = #{currentPosition} ,
+	        salary = #{salary} ,
+	        salary_unit = #{salaryUnit} ,
+	        description = #{description} ,
+	        create_time = #{createTime} ,
+	        update_time = #{updateTime} 
+        WHERE 
+	        id = #{id} 
+    ]]>
+	</update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM edu_star_student WHERE
+        id = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="getById" resultMap="RM_EduStarStudent">
+		SELECT <include refid="columns" />
+	    <![CDATA[
+		    FROM edu_star_student 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="findPage_where">
+		<where>	      				
+	       <if test="id != null">
+				AND id = #{id}
+			</if>
+	       <if test="name != null">
+				AND name = #{name}
+			</if>
+	       <if test="headImg != null">
+				AND head_img = #{headImg}
+			</if>
+	       <if test="trainSchool != null">
+				AND train_school = #{trainSchool}
+			</if>
+	       <if test="trainSchoolId != null">
+				AND train_school_id = #{trainSchoolId}
+			</if>
+	       <if test="trainSpecialty != null">
+				AND train_specialty = #{trainSpecialty}
+			</if>
+	       <if test="trainSpecialtyId != null">
+				AND train_specialty_id = #{trainSpecialtyId}
+			</if>
+	       <if test="company != null">
+				AND company = #{company}
+			</if>
+	       <if test="companyId != null">
+				AND company_id = #{companyId}
+			</if>
+	       <if test="currentPosition != null">
+				AND current_position = #{currentPosition}
+			</if>
+	       <if test="salary != null">
+				AND salary = #{salary}
+			</if>
+	       <if test="salaryUnit != null">
+				AND salary_unit = #{salaryUnit}
+			</if>
+	       <if test="description != null">
+				AND description = #{description}
+			</if>
+	       <if test="createTimeBegin != null">
+				AND create_time >= #{createTimeBegin}
+		   </if>
+		   <if test="createTimeEnd  != null">
+				AND create_time &lt;= #{createTimeEnd}
+		   </if>
+	       <if test="updateTimeBegin != null">
+				AND update_time >= #{updateTimeBegin}
+		   </if>
+		   <if test="updateTimeEnd  != null">
+				AND update_time &lt;= #{updateTimeEnd}
+		   </if>
+		</where>
+	</sql>
+		
+    <select id="count" resultType="long">
+        SELECT count(id) FROM edu_star_student 
+		<include refid="findPage_where"/>    
+    </select>
+
+    <select id="findAll" resultMap="RM_EduStarStudent">
+    SELECT <include refid="columns"/> FROM edu_star_student where 1=1
+    </select>
+
+    <select id="select" resultMap="RM_EduStarStudent">
+    SELECT <include refid="columns"/> FROM edu_star_student where 1=1
+    <include refid="findPage_where"/> limit 0,1
+    </select>
+
+    <select id="findPage" resultMap="RM_EduStarStudent">
+    	SELECT <include refid="columns" />
+	    FROM edu_star_student 
+		<include refid="findPage_where"/>
+    </select>
+
+	
+</mapper>
+

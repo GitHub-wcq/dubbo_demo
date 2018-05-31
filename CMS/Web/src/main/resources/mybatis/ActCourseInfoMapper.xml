@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<!-- <mapper namespace="com.youlanw.app.repository.ActCourseInfoMapper"> -->
+<mapper namespace="com.youlanw.cms.repository.mysql.ActCourseInfoMapper">
+
+	<resultMap id="RM_ActCourseInfo" type="com.youlanw.cms.entity.mysql.ActCourseInfo">
+        <result property="id" column="id"/>
+        <result property="teacherInfoId" column="teacher_info_id"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="number" column="number"/>
+        <result property="videoUrl" column="video_url"/>
+        <result property="videoImg" column="video_img"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="status" column="status"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,teacher_info_id,name,type,number,video_url,video_img,update_time,create_time,status
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id"  parameterType="com.youlanw.cms.entity.mysql.ActCourseInfo">
+    <![CDATA[
+        INSERT INTO act_course_info (
+        	id ,
+        	teacher_info_id ,
+        	name ,
+        	type ,
+        	number ,
+        	video_url ,
+        	video_img ,
+        	update_time ,
+        	create_time ,
+        	status 
+        ) VALUES (
+        	#{id} ,
+        	#{teacherInfoId} ,
+        	#{name} ,
+        	#{type} ,
+        	#{number} ,
+        	#{videoUrl} ,
+        	#{videoImg} ,
+        	#{updateTime} ,
+        	#{createTime} ,
+        	#{status} 
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="update" >
+    <![CDATA[
+        UPDATE act_course_info SET
+	        teacher_info_id = #{teacherInfoId} ,
+	        name = #{name} ,
+	        type = #{type} ,
+	        number = #{number} ,
+	        video_url = #{videoUrl} ,
+	        video_img = #{videoImg} ,
+	        update_time = #{updateTime} ,
+	        create_time = #{createTime} ,
+	        status = #{status} 
+        WHERE 
+	        id = #{id} 
+    ]]>
+	</update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM act_course_info WHERE
+        id = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="getById" resultMap="RM_ActCourseInfo">
+		SELECT <include refid="columns" />
+	    <![CDATA[
+		    FROM act_course_info 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="findPage_where">
+		<where>	      				
+	       <if test="id != null">
+				AND id = #{id}
+			</if>
+	       <if test="teacherInfoId != null">
+				AND teacher_info_id = #{teacherInfoId}
+			</if>
+	       <if test="name != null">
+				AND name = #{name}
+			</if>
+	       <if test="type != null">
+				AND type = #{type}
+			</if>
+	       <if test="number != null">
+				AND number = #{number}
+			</if>
+	       <if test="videoUrl != null">
+				AND video_url = #{videoUrl}
+			</if>
+	       <if test="videoImg != null">
+				AND video_img = #{videoImg}
+			</if>
+	       <if test="updateTimeBegin != null">
+				AND update_time >= #{updateTimeBegin}
+		   </if>
+		   <if test="updateTimeEnd  != null">
+				AND update_time &lt;= #{updateTimeEnd}
+		   </if>
+	       <if test="createTimeBegin != null">
+				AND create_time >= #{createTimeBegin}
+		   </if>
+		   <if test="createTimeEnd  != null">
+				AND create_time &lt;= #{createTimeEnd}
+		   </if>
+	       <if test="status != null">
+				AND status = #{status}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="count" resultType="long">
+        SELECT count(id) FROM act_course_info 
+		<include refid="findPage_where"/>    
+    </select>
+
+    <select id="findAll" resultMap="RM_ActCourseInfo">
+    SELECT <include refid="columns"/> FROM act_course_info where 1=1
+    </select>
+
+    <select id="select" resultMap="RM_ActCourseInfo">
+    SELECT <include refid="columns"/> FROM act_course_info where 1=1
+    <include refid="findPage_where"/> limit 0,1
+    </select>
+
+    <select id="findPage" resultMap="RM_ActCourseInfo">
+    	SELECT <include refid="columns" />
+	    FROM act_course_info 
+		<include refid="findPage_where"/>
+    </select>
+    
+    <select id="getIdListByTeacherInfoIdAndStatus" resultType="java.lang.Integer">
+    	SELECT aci.`id` id 
+		FROM `act_course_info` aci 
+		WHERE 1 = 1
+			<if test="teacherInfoId != null">
+				AND aci.`teacher_info_id` = #{teacherInfoId}
+		    </if>
+		    <if test="status != null">
+				AND aci.`status` = #{status}
+		    </if>
+    </select>
+    
+    <select id="getByStatus" resultMap="RM_ActCourseInfo">
+    	SELECT *
+		FROM `act_course_info` aci 
+		WHERE aci.`status` = #{status}
+    </select>
+    
+    <select id="getByTeacherInfoId" resultMap="RM_ActCourseInfo">
+    	SELECT *
+		FROM `act_course_info` aci 
+		WHERE aci.`teacher_info_id` = #{teacherInfoId}
+    </select>
+    
+    <select id="getVoteCountById" resultType="java.lang.Integer">
+    	SELECT COUNT(asvi.`vote_count`) FROM `act_student_vote_info` asvi WHERE asvi.`status` = 1 AND asvi.`course_info_id` = #{id}
+    </select>
+    
+     <resultMap id="RM_ActCourseInfoVo" type="com.youlanw.cms.entity.vo.ActCourseInfoVo">
+        <result property="id" column="id"/>
+        <result property="courseNumber" column="courseNumber"/>
+        <result property="courseName" column="courseName"/>
+        <result property="courseType" column="courseType"/>
+        <result property="teacherName" column="teacherName"/>
+        <result property="school" column="school"/>
+        <result property="createTime" column="createTime"/>
+        <result property="voteCount" column="voteCount"/>
+        <result property="status" column="status"/>
+	</resultMap>
+
+	
+    <select id="findList" resultMap="RM_ActCourseInfoVo">
+    	SELECT  aci.`id` id,
+				aci.`number` courseNumber,
+				aci.`name` courseName,
+				aci.`type` courseType,
+				ati.`name` teacherName,
+				ati.`school` school,
+				aci.`create_time` createTime,
+				aci.`status` status,
+				SUM(asvi.`vote_count`) voteCount
+		FROM `act_course_info` aci 
+		LEFT JOIN `act_teacher_info` ati ON aci.`teacher_info_id` = ati.`id`
+		LEFT JOIN `act_student_vote_info` asvi ON aci.`id` = asvi.`course_info_id`
+		WHERE 1 = 1
+			<if test="teacherInfoId  != null">
+				AND aci.`teacher_info_id` = #{teacherInfoId}
+		    </if>
+			<if test="teacherName  != null">
+				AND ati.`name` LIKE '%${teacherName}%'
+		    </if>
+			<if test="courseNumber  != null">
+				AND aci.`number` = #{courseNumber}
+		    </if>
+		GROUP BY aci.`id`
+		ORDER BY aci.`create_time`
+    </select>
+    
+    
+
+	
+</mapper>
+

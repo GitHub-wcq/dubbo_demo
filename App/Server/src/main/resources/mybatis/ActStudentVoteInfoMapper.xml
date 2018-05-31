@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<!-- <mapper namespace="com.youlanw.app.repository.ActStudentVoteInfoMapper"> -->
+<mapper namespace="com.youlanw.app.repository.mysql.ActStudentVoteInfoDao">
+
+	<resultMap id="RM_ActStudentVoteInfo" type="com.youlanw.app.entity.mysql.ActStudentVoteInfo">
+        <result property="id" column="id"/>
+        <result property="ylUserId" column="yl_user_id"/>
+        <result property="teacherInfoId" column="teacher_info_id"/>
+        <result property="courseInfoId" column="course_info_id"/>
+        <result property="voteCount" column="vote_count"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="status" column="status"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,yl_user_id,teacher_info_id,course_info_id,vote_count,create_time,update_time,status
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO act_student_vote_info (
+        	id ,
+        	yl_user_id ,
+        	teacher_info_id ,
+        	course_info_id ,
+        	vote_count ,
+        	create_time ,
+        	update_time ,
+        	status 
+        ) VALUES (
+        	#{id} ,
+        	#{ylUserId} ,
+        	#{teacherInfoId} ,
+        	#{courseInfoId} ,
+        	#{voteCount} ,
+        	#{createTime} ,
+        	#{updateTime} ,
+        	#{status} 
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="update" >
+    <![CDATA[
+        UPDATE act_student_vote_info SET
+	        yl_user_id = #{ylUserId} ,
+	        teacher_info_id = #{teacherInfoId} ,
+	        course_info_id = #{courseInfoId} ,
+	        vote_count = #{voteCount} ,
+	        create_time = #{createTime} ,
+	        update_time = #{updateTime} ,
+	        status = #{status} 
+        WHERE 
+	        id = #{id} 
+    ]]>
+	</update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM act_student_vote_info WHERE
+        id = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="getById" resultMap="RM_ActStudentVoteInfo">
+		SELECT <include refid="columns" />
+	    <![CDATA[
+		    FROM act_student_vote_info 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="findPage_where">
+		<where>	      				
+	       <if test="id != null">
+				AND id = #{id}
+			</if>
+	       <if test="ylUserId != null">
+				AND yl_user_id = #{ylUserId}
+			</if>
+	       <if test="teacherInfoId != null">
+				AND teacher_info_id = #{teacherInfoId}
+			</if>
+	       <if test="courseInfoId != null">
+				AND course_info_id = #{courseInfoId}
+			</if>
+	       <if test="voteCount != null">
+				AND vote_count = #{voteCount}
+			</if>
+	       <if test="createTimeBegin != null">
+				AND create_time >= #{createTimeBegin}
+		   </if>
+		   <if test="createTimeEnd  != null">
+				AND create_time &lt;= #{createTimeEnd}
+		   </if>
+	       <if test="updateTimeBegin != null">
+				AND update_time >= #{updateTimeBegin}
+		   </if>
+		   <if test="updateTimeEnd  != null">
+				AND update_time &lt;= #{updateTimeEnd}
+		   </if>
+	       <if test="status != null">
+				AND status = #{status}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="count" resultType="long">
+        SELECT count(id) FROM act_student_vote_info 
+		<include refid="findPage_where"/>    
+    </select>
+
+    <select id="findAll" resultMap="RM_ActStudentVoteInfo">
+    SELECT <include refid="columns"/> FROM act_student_vote_info where 1=1
+    </select>
+
+    <select id="select" resultMap="RM_ActStudentVoteInfo">
+    SELECT <include refid="columns"/> FROM act_student_vote_info where 1=1
+    <include refid="findPage_where"/> limit 0,1
+    </select>
+
+    <select id="findPage" resultMap="RM_ActStudentVoteInfo">
+    	SELECT <include refid="columns" />
+	    FROM act_student_vote_info 
+		<include refid="findPage_where"/>
+    </select>
+
+	
+	
+	<select id="findAllVoteCount" resultType="long">
+    	SELECT SUM(vote_count) FROM act_student_vote_info;
+    </select>
+</mapper>
+

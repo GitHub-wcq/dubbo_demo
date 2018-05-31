@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<!-- <mapper namespace="com.youlanw.app.repository.ActTeacherInfoMapper"> -->
+<mapper namespace="com.youlanw.cms.repository.mysql.ActTeacherInfoMapper">
+
+	<resultMap id="RM_ActTeacherInfo" type="com.youlanw.cms.entity.mysql.ActTeacherInfo">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="school" column="school"/>
+        <result property="operator" column="operator"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="number" column="number"/>
+        <result property="specialty" column="specialty"/>
+        <result property="introduce" column="introduce"/>
+        <result property="imgUrl" column="img_url"/>
+        <result property="status" column="status"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,name,school,operator,update_time,create_time,number,specialty,introduce,img_url,status
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.youlanw.cms.entity.mysql.ActTeacherInfo">
+    <![CDATA[
+        INSERT INTO act_teacher_info (
+        	id ,
+        	name ,
+        	school ,
+        	operator ,
+        	update_time ,
+        	create_time ,
+        	number ,
+        	specialty ,
+        	introduce ,
+        	img_url ,
+        	status 
+        ) VALUES (
+        	#{id} ,
+        	#{name} ,
+        	#{school} ,
+        	#{operator} ,
+        	#{updateTime} ,
+        	#{createTime} ,
+        	#{number} ,
+        	#{specialty} ,
+        	#{introduce} ,
+        	#{imgUrl} ,
+        	#{status} 
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="update" >
+    <![CDATA[
+        UPDATE act_teacher_info SET
+	        name = #{name} ,
+	        school = #{school} ,
+	        operator = #{operator} ,
+	        update_time = #{updateTime} ,
+	        create_time = #{createTime} ,
+	        specialty = #{specialty} ,
+	        introduce = #{introduce} ,
+	        img_url = #{imgUrl} ,
+	        status = #{status} 
+        WHERE 
+	        id = #{id}
+    ]]>
+	</update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM act_teacher_info WHERE
+        id = #{id}
+    ]]>
+    </delete>
+    
+    <select id="getById" resultMap="RM_ActTeacherInfo">
+		SELECT <include refid="columns" />
+	    <![CDATA[
+		    FROM act_teacher_info 
+	        WHERE 
+		        id = #{id}
+	    ]]>
+	</select>
+	
+	<sql id="findPage_where">
+		<where>	      				
+	       <if test="id != null">
+				AND id = #{id}
+			</if>
+	       <if test="name != null">
+				AND name = #{name}
+			</if>
+	       <if test="school != null">
+				AND school = #{school}
+			</if>
+	       <if test="operator != null">
+				AND operator = #{operator}
+			</if>
+	       <if test="updateTimeBegin != null">
+				AND update_time >= #{updateTimeBegin}
+		   </if>
+		   <if test="updateTimeEnd  != null">
+				AND update_time &lt;= #{updateTimeEnd}
+		   </if>
+	       <if test="createTimeBegin != null">
+				AND create_time >= #{createTimeBegin}
+		   </if>
+		   <if test="createTimeEnd  != null">
+				AND create_time &lt;= #{createTimeEnd}
+		   </if>
+	       <if test="number != null">
+				AND number = #{number}
+			</if>
+	       <if test="specialty != null">
+				AND specialty = #{specialty}
+			</if>
+	       <if test="introduce != null">
+				AND introduce = #{introduce}
+			</if>
+	       <if test="imgUrl != null">
+				AND img_url = #{imgUrl}
+			</if>
+	       <if test="status != null">
+				AND status = #{status}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="count" resultType="long">
+        SELECT count(id) FROM act_teacher_info 
+		<include refid="findPage_where"/>    
+    </select>
+
+    <select id="findAll" resultMap="RM_ActTeacherInfo">
+    SELECT <include refid="columns"/> FROM act_teacher_info where 1=1
+    </select>
+
+    <select id="select" resultMap="RM_ActTeacherInfo">
+    SELECT <include refid="columns"/> FROM act_teacher_info where 1=1
+    <include refid="findPage_where"/> limit 0,1
+    </select>
+
+    <select id="findPage" resultMap="RM_ActTeacherInfo">
+    	SELECT <include refid="columns" />
+	    FROM act_teacher_info 
+		<include refid="findPage_where"/>
+    </select>
+    
+    <select id="getVoteCountById" resultType="java.lang.Integer">
+    	SELECT COUNT(asvi.`vote_count`) FROM `act_student_vote_info` asvi WHERE asvi.`status` = 1 AND asvi.`teacher_info_id` = #{id}
+    </select>
+    
+    <resultMap id="RM_ActTeacherInfoVo" type="com.youlanw.cms.entity.vo.ActTeacherInfoVo">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="school" column="school"/>
+        <result property="operator" column="operator"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="number" column="number"/>
+        <result property="voteCount" column="voteCount"/>
+	</resultMap>
+
+	
+    <select id="findList" resultMap="RM_ActTeacherInfoVo">
+    	SELECT  ati.`id` id,
+				ati.`number` number,
+				ati.`name` name,
+				ati.`school` school,
+				ati.`update_time` updateTime,
+				ati.`operator` operator,
+				SUM(asvi.`vote_count`) voteCount 
+			FROM `act_teacher_info` ati 
+			LEFT JOIN `act_student_vote_info` asvi ON ati.`id` = asvi.`teacher_info_id`
+			WHERE 1 = 1
+				<if test="name != null">
+					AND ati.`name` LIKE '%${name}%'
+				</if>
+			GROUP BY ati.`id`
+			ORDER BY ati.`create_time`
+    </select>
+
+	
+</mapper>
+
